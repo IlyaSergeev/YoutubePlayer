@@ -1,5 +1,7 @@
 package com.him.youtube.player;
 
+import java.io.Serializable;
+
 import android.app.Activity;
 import android.content.Context;
 import android.media.MediaPlayer;
@@ -18,10 +20,17 @@ import com.him.youtube.api.YouTubeFMTQuality;
 
 public class VideoPlayerActivity extends Activity
 {
+	public interface OnCompleteListener extends Serializable
+	{
+		public void didComplete(VideoPlayerActivity activity);
+	}
+	
 	public static final String VideoIdExtra = "VideoIdExtra";
+	public static final String OnCompleteListenerExtra = "OnCompleteListenerExtra";
 
-	VideoView mVideoView;
-	String mVideoId = "tzgFuUu0oxg";
+	private VideoView mVideoView;
+	private String mVideoId;
+	private OnCompleteListener onCompleteListener;
 
 	/** Background task on which all of the interaction with YouTube is done */
 	protected QueryYouTubeTask mQueryYouTubeTask;
@@ -40,6 +49,7 @@ public class VideoPlayerActivity extends Activity
 				android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
 		mVideoId = getIntent().getExtras().getString(VideoIdExtra);
+		onCompleteListener = (OnCompleteListener) getIntent().getExtras().getSerializable(OnCompleteListenerExtra);
 
 		mQueryYouTubeTask = (QueryYouTubeTask) new QueryYouTubeTask()
 				.execute(mVideoId);
@@ -76,6 +86,10 @@ public class VideoPlayerActivity extends Activity
 						&& mQueryYouTubeTask.isCancelled())
 					return;
 				VideoPlayerActivity.this.finish();
+				if (onCompleteListener != null)
+				{
+					onCompleteListener.didComplete(VideoPlayerActivity.this);
+				}
 			}
 		});
 
