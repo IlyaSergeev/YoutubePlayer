@@ -27,6 +27,7 @@ public class VideoPlayerActivity extends Activity
 
 	private VideoView mVideoView;
 	private String mVideoId;
+	private MediaController mediaController;
 
 	/** Background task on which all of the interaction with YouTube is done */
 	protected QueryYouTubeTask mQueryYouTubeTask;
@@ -88,6 +89,8 @@ public class VideoPlayerActivity extends Activity
 			}
 		});
 
+		mediaController = new MediaController(VideoPlayerActivity.this);
+		mVideoView.setMediaController(mediaController);
 	}
 
 	@Override
@@ -187,11 +190,6 @@ public class VideoPlayerActivity extends Activity
 					throw new RuntimeException("Invalid NULL Url.");
 
 				mVideoView.setVideoURI(pResult);
-
-				final MediaController mediaController = new MediaController(
-						VideoPlayerActivity.this);
-				mVideoView.setMediaController(mediaController);
-				mediaController.show(0);
 				mVideoView.setKeepScreenOn(true);
 
 				mVideoView.requestFocus();
@@ -199,8 +197,7 @@ public class VideoPlayerActivity extends Activity
 
 			} catch (Exception e)
 			{
-				Log.e(this.getClass().getSimpleName(), "Error playing video!",
-						e);
+				Log.e(this.getClass().getSimpleName(), "Error playing video!", e);
 			}
 		}
 	}
