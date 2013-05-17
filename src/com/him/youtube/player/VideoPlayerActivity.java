@@ -11,7 +11,9 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.telephony.TelephonyManager;
 import android.util.Log;
+import android.view.View;
 import android.widget.MediaController;
+import android.widget.ProgressBar;
 import android.widget.VideoView;
 
 import com.him.youtube.api.YouTubeAPI;
@@ -26,6 +28,7 @@ public class VideoPlayerActivity extends Activity
 	public static final String OnCompleteListenerExtra = "OnCompleteListenerExtra";
 
 	private VideoView mVideoView;
+	private ProgressBar mProgressBar;
 	private String mVideoId;
 	private MediaController mediaController;
 
@@ -56,6 +59,7 @@ public class VideoPlayerActivity extends Activity
 		setContentView(R.layout.player);
 
 		mVideoView = (VideoView) findViewById(R.id.videoView);
+		mProgressBar = (ProgressBar) findViewById(R.id.progressBar);
 
 		mVideoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener()
 		{
@@ -66,7 +70,7 @@ public class VideoPlayerActivity extends Activity
 				if (mQueryYouTubeTask != null
 						&& mQueryYouTubeTask.isCancelled())
 					return;
-				// VideoPlayerActivity.this.mProgressBar.setVisibility(View.GONE);
+				VideoPlayerActivity.this.mProgressBar.setVisibility(View.GONE);
 				// VideoPlayerActivity.this.mProgressMessage.setVisibility(View.GONE);
 			}
 
@@ -190,6 +194,7 @@ public class VideoPlayerActivity extends Activity
 					throw new RuntimeException("Invalid NULL Url.");
 
 				mVideoView.setVideoURI(pResult);
+				mProgressBar.setVisibility(View.VISIBLE);
 				mVideoView.setKeepScreenOn(true);
 
 				mVideoView.requestFocus();
