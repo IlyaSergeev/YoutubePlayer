@@ -1,8 +1,10 @@
 package com.him.youtube.player;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
 import android.net.Uri;
@@ -31,6 +33,21 @@ public class VideoPlayerActivity extends Activity
 	private ProgressBar mProgressBar;
 	private String mVideoId;
 	private MediaController mediaController;
+	
+	private BroadcastReceiver receiver = new BroadcastReceiver()
+	{
+		@Override
+		public void onReceive(Context context, Intent intent)
+		{
+			if (intent.getAction().equals(Intent.ACTION_SCREEN_OFF))
+			{
+				if (mVideoView != null)
+				{
+					mVideoView.pause();
+				}
+			}
+		}
+	};
 
 	/** Background task on which all of the interaction with YouTube is done */
 	protected QueryYouTubeTask mQueryYouTubeTask;
@@ -41,6 +58,7 @@ public class VideoPlayerActivity extends Activity
 		super.onCreate(savedInstanceState);
 
 		initView();
+		registerReceiver(receiver, new IntentFilter(Intent.ACTION_SCREEN_OFF));
 
 		// set the flag to keep the screen ON so that the video can play without
 		// the screen being turned off
@@ -102,6 +120,7 @@ public class VideoPlayerActivity extends Activity
 	{
 		super.onDestroy();
 
+		unregisterReceiver(receiver);
 		if (mVideoView != null)
 			mVideoView.stopPlayback();
 
