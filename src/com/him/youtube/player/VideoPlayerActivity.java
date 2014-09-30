@@ -16,10 +16,12 @@ import android.util.Log;
 import android.view.View;
 import android.widget.MediaController;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 import android.widget.VideoView;
 
 import com.him.youtube.api.YouTubeAPI;
 import com.him.youtube.api.YouTubeFMTQuality;
+import com.him.youtube.api.YoutubeAPIException;
 
 public class VideoPlayerActivity extends Activity
 {	
@@ -185,11 +187,30 @@ public class VideoPlayerActivity extends Activity
 				if (isCancelled())
 					return null;
 
-			} catch (Exception e)
+			}
+			catch (final YoutubeAPIException e)
+			{
+				runOnUiThread(new Runnable()
+				{
+					public void run()
+					{
+						Toast.makeText(VideoPlayerActivity.this, e.getReason(), Toast.LENGTH_SHORT).show();
+						onBackPressed();
+					}
+				});
+			}
+			catch (Exception e)
 			{
 				Log.e(this.getClass().getSimpleName(),
 						"Error occurred while retrieving information from YouTube.",
 						e);
+				runOnUiThread(new Runnable()
+				{
+					public void run()
+					{
+						onBackPressed();
+					}
+				});
 			}
 
 			if (uriStr != null)

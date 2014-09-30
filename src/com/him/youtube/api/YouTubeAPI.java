@@ -30,7 +30,7 @@ public class YouTubeAPI {
 	 * @throws ClientProtocolException
 	 * @throws UnsupportedEncodingException
 	 */
-	public static String getYouTubeUrl(int youTubeFmt, boolean fallback, String youTubeVideoId) throws IOException, ClientProtocolException, UnsupportedEncodingException {
+	public static String getYouTubeUrl(int youTubeFmt, boolean fallback, String youTubeVideoId) throws IOException, ClientProtocolException, UnsupportedEncodingException, YoutubeAPIException {
 
 		String uriStr = null;
 		HttpClient client = new DefaultHttpClient();
@@ -50,6 +50,11 @@ public class YouTubeAPI {
 			if (argValArr != null && argValArr.length >= 2) {
 				argMap.put(argValArr[0], URLDecoder.decode(argValArr[1], "UTF-8"));
 			}
+		}
+		
+		if ("fail".equals(argMap.get("status")))
+		{
+			throw new YoutubeAPIException(argMap.get("errorcode"), argMap.get("reason"));
 		}
 		
 		//Available formats for the video
