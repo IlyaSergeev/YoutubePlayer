@@ -177,7 +177,7 @@ public class VideoPlayerActivity extends Activity
 
 						&& lTelephonyManager.getDataState() == TelephonyManager.DATA_CONNECTED))
 				{
-					youTubeFmtQuality = YouTubeFMTQuality.MP4_NORMAL;
+					youTubeFmtQuality = YouTubeFMTQuality.MP4_HIGH1;
 				}
 
 				// request the actual URL of the video
